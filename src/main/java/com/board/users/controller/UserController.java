@@ -5,11 +5,17 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.board.users.domain.UserDTO;
 import com.board.users.mapper.UserMapper;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 
 @Controller
@@ -63,100 +69,61 @@ public class UserController {
 		return "redirect:/Users/List";
 	}
 	
-	
-//  @Autowired	 // 자동 new
-	/*
-	private UserMapper menuMapper;
-	
-	@RequestMapping("/Menus/List")
-	public String list(Model model) {
-		
-		// <MenuDTO> - MenuDTO 타입의 객체만 받을거라는 의미
-		// menuMapper.getMenuList() 결국 리턴하는게 dto 타입의 객체들
-		List<UserDTO> menuList = menuMapper.getMenuList(); // 인터페이스안에 getMenuList()를 실행
-														   // 이 함수는 @Mapping으로 연결된 xml 쿼리문임
-		System.out.println(menuList );                    
-		// 실행결과 안에 값들
-		// menuList.add( new MenuDTO("Menu01", "Spring", 1) )
-		// menuList.add( new MenuDTO("Menu02", "Java", 2) )
-		// ...
-						  //key(jstl)  value
-		model.addAttribute("menuList",menuList);
-		
-		return "menus/list";
+	// ------------------------------------------------
+	// 로그인 
+	// /Users/LoginForm
+	// response.sendRedirect() - Get방식 호출
+	// GetMapping으로 처리 : 로그인페이지로 이동
+	// postMapping 사용 안됨
+	@GetMapping("/LoginForm")
+	public String loginForm(
+			String uri, String menu_id, String nowpage, Model model) {
+		model.addAttribute("uri",uri);
+		model.addAttribute("menu_id",menu_id);
+		model.addAttribute("nowpage",nowpage);
+		return "users/login";
 	}
 	
-	@RequestMapping("/Menus/WriteForm")
-	public String writeForm() {
-		return "menus/write";
-	}
-	@RequestMapping("/Menus/WriteForm2")
-	public String updateForm2(@RequestParam("menu_name") String menu_name) {
-		return "menus/write2";
-	}
-	
-	/*
-	@RequestMapping("/Menus/Write")
-	public String write(MenuDTO menuDTO, Model model) {
+	// /Users/Login <- <form>
+	@PostMapping("/Login")
+	public String login(HttpServletRequest request,
+						HttpServletRequest response) {
+		// 넘어온 로그인정보 처리
+		String userid  = request.getParameter("userid");
+		String passwd  = request.getParameter("passwd");
+		String uri     = request.getParameter("uri");
+		String menu_id = request.getParameter("menu_id");
+		String nowpage = request.getParameter("nowpage");
+				
+		//db 조회
+		UserDTO user = userMapper.login(userid, passwd);
+		System.out.println(user);
 		
-		List<MenuDTO> menuList = menuMapper.getMenuList();
-		model.addAttribute("menuList", menuList);
-		System.out.println(menuDTO);
-		menuMapper.insertMenu(menuDTO);
-		
-		return "menus/list";
-	*/
-	/*
-	@RequestMapping("/Menus/Write")
-	public String write(UserDTO menuDTO) {
-		
-		System.out.println(menuDTO);
-		menuMapper.insertMenu(menuDTO);
-			
-//		return "menus/list";  // Model 없으면 값을 못받아버림
-		return "redirect:/Menus/List"; // response.sendRedirect()
+		// 다른페이지에서 볼수있도록 session 에 저장
+		HttpSession session = request.getSession();
+		session.setAttribute("login", user);
+				
+		//돌아갈 주소 설정	
+		return "redirect:/"  + uri + "/List"
+				+ "?menu_id" + menu_id 
+				+ "&nowpage" + nowpage;
 	}
 	
-	@RequestMapping("/Menus/Write2")
-	public String wirte2( UserDTO menuDTO ) {
-		// menu_name 만 넘어온
-		System.out.println(menuDTO);
+	// /Users/Logout
+	@RequestMapping(value = "/Logout",
+					method = RequestMethod.GET ) // == @GetMapping
+	public String louout(HttpServletRequest request,
+						 HttpServletRequest response,
+						 HttpSession        session) {
 		
-		// 메뉴 추가
-		menuMapper.insertMenu2(menuDTO);
-		return "redirect:/Menus/List";
+		session.invalidate(); // session을 초기화
+		
+		/*
+		Object url = session.getAttribute("URL");
+		return "redirect:" + (String url);
+		*/
+		return "redirect:/";
 	}
-	
-	@RequestMapping("/Menus/Delete")
-	public String delete(UserDTO menuDTO ) {
-		
-		System.out.println(menuDTO);
-		menuMapper.deleteMenu(menuDTO);
-		
-		return "redirect:/Menus/List";
-	}
-	
-	@RequestMapping("/Menus/UpdateForm")
-	public String updateForm(UserDTO menuDTO,
-							  Model model) {
-		//넘어온 정보 확인 (MENU_ID)
-		System.out.println( menuDTO );
-		
-		// 넘어온 정보를 menu 에 담음
-		UserDTO menu = menuMapper.getMenu(menuDTO);
-		// model 에 menu 추가
-		model.addAttribute("menu",menu);
-		return "menus/update";
-	}
-	
-
-	@RequestMapping("/Menus/Update")
-	public String update(UserDTO menuDTO) {
-		
-		menuMapper.updateMenu(menuDTO);
-		return "redirect:/Menus/List";
-	}
-	*/
 }
 
 
