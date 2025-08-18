@@ -1,0 +1,91 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<style>
+@charset "UTF-8";
+
+ * {
+     margin : 0; padding:0;
+     box-sizing : border-box;
+  }
+  main {
+    width: 80%;
+    margin : 0 auto;
+  }
+ 
+  table, th, td  {
+     border:1px solid black;
+     border-collapse: collapse;
+  }
+  table{ width: 100%; }
+  
+  ul,li { list-style: none;  }
+  
+  a        { text-decoration:none;      color:black; }
+  a:hover  { text-decoration:underline;  }
+  
+  h2 {
+    margin: 15px 0px;
+    text-align : center;
+  }
+  
+  #menu {
+    width : 800px;
+    margin: 30px 0;
+    
+    td {
+       text-align  : center;
+       background: #333;
+       color : white;
+       font-weight: bold; 
+       border: 1px solid silver;
+       
+       &:hover {
+          background:#c0c0c0;
+          color : white;
+       }
+       
+       a {
+         text-decoration : none;
+         color: white;
+         display : block;
+         padding : 15px 15px;
+         width: 100%;
+       }    
+    }  
+  }
+  
+  #paging {
+     width : 40%;
+     margin : 20px auto;
+     margin-bottom : 80px;
+     
+     table {
+        width : 100%;
+        border: 0px solid black;  
+        td {
+           padding: 10px;
+           border: 0px solid black;         
+        }
+        
+     }
+  }
+  
+  
+  
+  
+</style>
+ <!-- 메뉴 목록 -->
+  <table id="menu">
+  	<tr>
+  	   <c:forEach var="menu" items="${ menuList }">
+  			<td>
+  				<a href="/Board/TotalList?menu_id=${menu.menu_id}">${ menu.menu_name }</a>
+  			</td>	
+  			</c:forEach>
+  	</tr>
+  	
+  </table>
+  
+ 
+    

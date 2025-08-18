@@ -1,0 +1,97 @@
+CMD >  sqlplus /nolog
+ SQL conn /as sysdba
+ 
+ ALTER SESSION SET "_ORACLE_SCRIPT"=true;
+ CREATE USER SPRING IDENTIFIED BY 1234;
+ GRANT CONNECT, RESOURCE TO SPRING;
+ ALTER USER SPRING DEFAULT TABLESPACE USERS QUOTA UNLIMITED ON USERS;
+
+----------------------------------
+
+CREATE  TABLE MENUS (
+    MENU_ID     VARCHAR2(6)   PRIMARY KEY   -- 매뉴아이디
+  , MENU_NAME   VARCHAR2(30)     -- 메뉴이름
+  , MENU_SEQ    NUMBER(6)        -- 순번
+)
+
+INSERT  INTO   MENUS  VALUES ( 'MENU01', 'HTML',       1);
+INSERT  INTO   MENUS  VALUES ( 'MENU02', 'CSS',         2);
+INSERT  INTO   MENUS  VALUES ( 'MENU03', 'JAVASCRIPT',  3);
+COMMIT
+
+SELECT * FROM MENUS;
+
+----------------------------------------------------
+
+-- 회원정보
+CREATE   TABLE   TUSER (
+     USERID      VARCHAR2(12)  PRIMARY KEY
+   , PASSWD      VARCHAR2(12)  NOT NULL
+   , USERNAME    VARCHAR2(30)  NOT NULL
+   , EMAIL       VARCHAR2(320)
+   , UPOINT      NUMBER(10)    DEFAULT 1000  
+   , INDATE      DATE          DEFAULT SYSDATE
+);
+
+INSERT INTO tuser (
+    userid,
+    passwd,
+    username,
+    email,
+    upoint,
+    indate
+) VALUES (
+    'sky',
+    '1234',
+    '관리자',
+    'admin@green.com',
+    1000,
+    sysdate
+);
+
+commit;
+
+----------------------------------------------------
+
+-- 멀티 게시판 
+DROP    TABLE  BOARD;
+CREATE  TABLE  BOARD (
+     IDX          NUMBER(8, 0)         PRIMARY KEY
+   , MENU_ID      VARCHAR2(6),
+   CONSTRAINT FK-BOARD-MENUS
+   FOREIGN KEY(MENU_ID)
+     REFERENCES  MENUS ( MENU_ID ),
+   , TITLE        VARCHAR2(300 BYTE)   NOT NULL
+   , CONTENT      VARCHAR2(4000 BYTE)
+   , WRITER       VARCHAR2(12)
+   , REGDATE      DATE                 DEFAULT  SYSDATE
+   , HIT          NUMBER(9, 0)         DEFAULT  0
+);
+
+INSERT INTO BOARD (IDX, MENU_ID, TITLE, CONTENT, WRITER)
+ VALUES (
+   ( SELECT NVL(MAX(IDX),0)+1 FROM BOARD  )
+   , 'MENU05', '안녕하세요', 'ㅋㅋㅋㅋ', 'ㅠㅠㅠㅠ');
+COMMIT;  
+
+----------------------------------------------------
+
+-- 멀티게시판 자료실
+CREATE  TABLE  FILES
+(
+     FILE_NUM    NUMBER(6,0)    NOT NULL    -- 파일고유번호
+   , IDX         NUMBER(6,0)    NOT NULL    -- 게시글 번호
+   , FILENAME    VARCHAR2(300)  NOT NULL    -- 파일이름
+   , FILEEXT     VARCHAR2(300)  NOT NULL    -- 파일확장자
+   , SFILENAME   VARCHAR2(300)  NOT NULL    -- 저장된 실제 파일명
+   
+   , CONSTRAINTS   FILES_PK     PRIMARY KEY   -- 기본기(복합키)
+   (
+       FILE_NUM,
+       IDX
+   )
+   , CONSTRAINT   FK_BOARD_FILES_IDX
+     FOREIGN KEY  (IDX)
+     REFERENCES   BOARD(IDX)
+     ON  DELETE   CASCADE
+);

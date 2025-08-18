@@ -1,0 +1,166 @@
+package com.board.users.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.board.users.domain.UserDTO;
+import com.board.users.mapper.UserMapper;
+
+
+@Controller
+@RequestMapping("/Users") // 전체를 mapping에 적용
+public class UserController {
+	@Autowired
+	private UserMapper userMapper;
+	@RequestMapping("/List")
+	public String userlist(Model model) {
+		
+		List<UserDTO> userList = userMapper.getUserList();
+		System.out.println(userList);
+		
+		model.addAttribute("userList",userList);
+		return "users/userlist";
+	}
+	
+	@RequestMapping("/WriteForm")
+	public String writeForm() {
+		return "users/write";
+	}
+	
+	@RequestMapping("/Write")
+	public String write(UserDTO userDTO) {
+		userMapper.insertUser(userDTO);
+		System.out.println(userDTO);
+		return "redirect:/Users/List";
+	}
+	
+	@RequestMapping("/Delete")
+	public String delete( @RequestParam("userid") String userid ) {
+		System.out.println(userid);
+		
+		userMapper.deleteUser(userid);
+		return"redirect:/Users/List";
+	}
+	
+	@RequestMapping("/UpdateForm")
+	public String getUpdateUser(@RequestParam("userid") String userid,
+								Model model) {
+		UserDTO user = userMapper.getUser(userid);
+		System.out.println("3:" + userid);
+		model.addAttribute("user",user);
+		return "users/update";
+	}
+	
+	@RequestMapping("/Update")
+	public String update(UserDTO userDTO) {
+		userMapper.updateUser(userDTO);
+		
+		return "redirect:/Users/List";
+	}
+	
+	
+//  @Autowired	 // 자동 new
+	/*
+	private UserMapper menuMapper;
+	
+	@RequestMapping("/Menus/List")
+	public String list(Model model) {
+		
+		// <MenuDTO> - MenuDTO 타입의 객체만 받을거라는 의미
+		// menuMapper.getMenuList() 결국 리턴하는게 dto 타입의 객체들
+		List<UserDTO> menuList = menuMapper.getMenuList(); // 인터페이스안에 getMenuList()를 실행
+														   // 이 함수는 @Mapping으로 연결된 xml 쿼리문임
+		System.out.println(menuList );                    
+		// 실행결과 안에 값들
+		// menuList.add( new MenuDTO("Menu01", "Spring", 1) )
+		// menuList.add( new MenuDTO("Menu02", "Java", 2) )
+		// ...
+						  //key(jstl)  value
+		model.addAttribute("menuList",menuList);
+		
+		return "menus/list";
+	}
+	
+	@RequestMapping("/Menus/WriteForm")
+	public String writeForm() {
+		return "menus/write";
+	}
+	@RequestMapping("/Menus/WriteForm2")
+	public String updateForm2(@RequestParam("menu_name") String menu_name) {
+		return "menus/write2";
+	}
+	
+	/*
+	@RequestMapping("/Menus/Write")
+	public String write(MenuDTO menuDTO, Model model) {
+		
+		List<MenuDTO> menuList = menuMapper.getMenuList();
+		model.addAttribute("menuList", menuList);
+		System.out.println(menuDTO);
+		menuMapper.insertMenu(menuDTO);
+		
+		return "menus/list";
+	*/
+	/*
+	@RequestMapping("/Menus/Write")
+	public String write(UserDTO menuDTO) {
+		
+		System.out.println(menuDTO);
+		menuMapper.insertMenu(menuDTO);
+			
+//		return "menus/list";  // Model 없으면 값을 못받아버림
+		return "redirect:/Menus/List"; // response.sendRedirect()
+	}
+	
+	@RequestMapping("/Menus/Write2")
+	public String wirte2( UserDTO menuDTO ) {
+		// menu_name 만 넘어온
+		System.out.println(menuDTO);
+		
+		// 메뉴 추가
+		menuMapper.insertMenu2(menuDTO);
+		return "redirect:/Menus/List";
+	}
+	
+	@RequestMapping("/Menus/Delete")
+	public String delete(UserDTO menuDTO ) {
+		
+		System.out.println(menuDTO);
+		menuMapper.deleteMenu(menuDTO);
+		
+		return "redirect:/Menus/List";
+	}
+	
+	@RequestMapping("/Menus/UpdateForm")
+	public String updateForm(UserDTO menuDTO,
+							  Model model) {
+		//넘어온 정보 확인 (MENU_ID)
+		System.out.println( menuDTO );
+		
+		// 넘어온 정보를 menu 에 담음
+		UserDTO menu = menuMapper.getMenu(menuDTO);
+		// model 에 menu 추가
+		model.addAttribute("menu",menu);
+		return "menus/update";
+	}
+	
+
+	@RequestMapping("/Menus/Update")
+	public String update(UserDTO menuDTO) {
+		
+		menuMapper.updateMenu(menuDTO);
+		return "redirect:/Menus/List";
+	}
+	*/
+}
+
+
+
+
+
+
