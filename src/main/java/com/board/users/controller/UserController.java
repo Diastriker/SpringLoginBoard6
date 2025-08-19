@@ -81,6 +81,7 @@ public class UserController {
 		model.addAttribute("uri",uri);
 		model.addAttribute("menu_id",menu_id);
 		model.addAttribute("nowpage",nowpage);
+		System.out.println("첫 nowpage: " + nowpage);
 		return "users/login";
 	}
 	
@@ -102,11 +103,12 @@ public class UserController {
 		// 다른페이지에서 볼수있도록 session 에 저장
 		HttpSession session = request.getSession();
 		session.setAttribute("login", user);
-				
+		System.out.println("uri: " + uri);
+		System.out.println("두번째 nowpage: " + nowpage);
 		//돌아갈 주소 설정	
 		return "redirect:/"  + uri + "/List"
-				+ "?menu_id" + menu_id 
-				+ "&nowpage" + nowpage;
+				+ "?menu_id=" + menu_id 
+				+ "&nowpage=" + nowpage;
 	}
 	
 	// /Users/Logout

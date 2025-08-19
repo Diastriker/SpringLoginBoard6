@@ -44,10 +44,10 @@ public class AuthInterceptor implements HandlerInterceptor {
 		Object      login   = session.getAttribute("login");
 		
 		if(login == null) { // 로그인이 안돼있다면, 로그인 페이지로 이동
-			String fmt = "/Users/LoginForm?uri={0}&menu_id={1}&nowpage{2}";
+			String fmt = "/Users/LoginForm?uri={0}&menu_id={1}&nowpage={2}";
 			String loc = MessageFormat.format(fmt, 
 										uri, menu_id, nowpage);
-			response.sendRedirect(loc);
+			response.sendRedirect(loc); // GET방식 요청 
 			return false;
 		}
 		

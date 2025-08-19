@@ -19,5 +19,7 @@ public interface UserMapper {
 
 	void updateUser(UserDTO userDTO);
 
+	UserDTO login(String userid, String passwd);
+
 }
 

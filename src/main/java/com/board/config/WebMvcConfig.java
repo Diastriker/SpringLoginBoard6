@@ -26,7 +26,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		// 전체를 주석처리(28~33)하면 로그인로직을 잠시 멈출수 있다
 		// 로그인기능 일시정지  
 		registry.addInterceptor( authInterceptor )
-		//		.addPathPatterns("/**") // 모든 페이지 로그인
+		//		.addPathPatterns("/**") // 모든 페이지 로그인 필요
 				.addPathPatterns("/Board/**", "/BoardPaging/**") // 로그인 대상
 				.excludePathPatterns("/css/**", "/img/**", "js/**");
 		

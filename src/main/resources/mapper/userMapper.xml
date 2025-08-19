@@ -16,7 +16,19 @@
 		FROM TUSER
 		ORDER BY INDATE ASC
  	</select>
-
+	
+	<select id="login" resultType="com.board.users.domain.UserDTO">
+	SELECT   USERID,
+		 			 PASSWD,
+		 			 USERNAME, 
+		 			 EMAIL,
+		 		   UPOINT,
+		 		   INDATE
+		FROM   TUSER		 		   
+		WHERE  USERID = #{userid}
+		AND		 PASSWD = #{passwd}
+</select>
+	
 	<insert id="insertUser">
 		INSERT INTO TUSER(USERID, PASSWD, USERNAME, EMAIL)
 		VALUES(#{userid},#{passwd},#{username},#{email})

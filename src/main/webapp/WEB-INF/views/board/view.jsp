@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -110,8 +111,12 @@
 			<tr>
 				<td colspan="4">
 				<a href="/Board/WriteForm?menu_id=${ boardList.menu_id }">[새글 쓰기]</a>&nbsp;&nbsp;
-				<a href="/Board/UpdateForm?idx=${ boardList.idx }">[게시글 수정하기]</a>&nbsp;&nbsp;
-				<a href="/Board/DelView?idx=${ boardList.idx }&menu_id=${ boardList.menu_id }" class="delete">[게시글 삭제하기]</a>&nbsp;&nbsp;
+				
+			  <c:if test="${boardList.writer eq login.userid}">
+				<a href="/BoardPaging/UpdateForm?idx=${ boardList.idx }&menu_id=${ boardList.menu_id }&nowpage=${nowpage}">[게시글 수정하기]</a>&nbsp;&nbsp;
+				<a href="/BoardPaging/DelView?idx=${ boardList.idx }&menu_id=${ boardList.menu_id }&nowpage=${nowpage}" class="delete">[게시글 삭제하기]</a>&nbsp;&nbsp;
+				</c:if>
+				
 				<a href="/Board/TotalList?menu_id=${ boardList.menu_id }">[목록]</a>&nbsp;&nbsp;
 				<a href="/">Home</a>
 				</td>
